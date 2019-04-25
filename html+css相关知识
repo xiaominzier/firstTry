@@ -1,0 +1,120 @@
+px 是css像素
+em:font-size的值（相对于父级的字体大小）1em=1个font-size大小，即16px;
+	如果设置宽度、高度大小的值，是相对于自身的字体大小
+注意：谷歌浏览器最小大小12px;如果低于，则按12px计算
+rem ：相对于根标签即HTML的font-size值
+1.元素适配宽度=元素所占列数 rem
+2.一列的宽度=屏幕实际宽度/l列数
+3.元素实际占得列数=元素在设计稿里的宽度/一列的宽度（根标签即HTML的font-size值）
+如：640*1136    物理像素    iPhone5   dpr=2
+       一个div在设计稿里的实际宽度200px--->100px(除以dpr)
+       所以  320*568  ---》css像素
+       一列占  320/16(总列数自己随便设的) =20px(每列所占css像素)
+       元素所占列数=100px/20px = 5rem
+
+盒模型不包括margin
+
+"${pageContext.request.contextPath}"
+
+absolute 层模型 脱离原来位置进行定位（对后续元素会有影响）  相对于最近的有定位的父级进行定位，如果没有，相对于文档进行定位
+relative 保留原来位置进行定位  相对于自己原来的位置进行定位
+用relative作为参照物，用absolute进行定位（父相子绝）
+
+position:absolute  float:left/right;打内部把元素换成inline-block
+报纸式布局：文字环绕图片
+img{
+	float:left;
+	width:100px;
+	margin-right:10px;
+}
+
+子元素浮动，在父元素中清除浮动
+.nav::after{    //父元素 （利用伪元素清除浮动）
+	content:"";
+	display:block;
+	clear:both;
+}
+.nav .list-item{   //子元素
+	float:left;
+}
+
+相对于文档居中    (如果要讓父級居中，就只能用絕對定位了)             
+div{
+	position:absolute;
+	left:50%;
+	top:50%;
+	width:100px;
+	height:100px;
+	background-color:red;
+	margin-left:-50px;
+	margin-top:-50px;
+}
+相对于可视区窗口居中                 
+div{
+	position:fixed;
+	left:50%;
+	top:50%;
+	width:100px;
+	height:100px;
+	background-color:red;
+	margin-left:-50px;
+	margin-top:-50px;
+}
+
+父子元素margin塌陷（上下）：子级相对父级margin-top
+bfc : block format context(改變一個盒子的語法規則,即渲染规则)
+如何觸發一個盒子的bfc
+position:absolute
+display:inline-block
+float:left/right
+overflow:hidden
+
+循环所有li(each),给当前li添加点击事件$(this).click
+js :循环遍历所有ul，判断当前li的ID和选中的ID相同，添加触发事件
+window.event.stopPropagation() 阻止事件冒泡（由子级延伸到父级）
+
+iframe框架嵌套技巧（全屏，去双滚动条） 
+<iframe src="https://www.baidu.com" height="100%" width="100%" id="frame_full" frameborder="0" scrolling="auto" onload="this.style.height=document.body.clientHeight-50"></iframe>
+或者
+html{overflow:hidden;}
+<iframe src="https://www.baidu.com" height="100%" width="100%" id="frame_full" frameborder="0" scrolling="auto" ></iframe>
+
+DOM:操作网页内容API标准    BOM:浏览器（现在用的不多）
+js:核心语法
+区分
+DHTML：一切实现网页动态效果技术的统称
+包含：HTML+css+js
+HTML：专门编写网页内容的语言（超文本标记语言） --》标签不可自定义
+XHTML：更严格的HTML标准
+XML:可扩展标记语言 --》标签可以自定义
+
+BOM:window全局对象
+history:封装历史记录栈
+navigator：封装了浏览器的配置信息
+location：封装当前网页的URL信息
+screen:封装显示器或者桌面信息/分辨率
+event:封装事件信息，并监听事件触发
+
+文本溢出容器，打点显示
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+首行缩进：text-indent
+行级元素只能嵌套行级元素，块级元素可以嵌套任何元素
+行级元素inline：内容决定元素所占位置，不可以通过css改变宽高  span strong em a del
+块级元素block：独占一行 可以通过css改变宽高  div  p ul li ol form address
+行级块元素 inline-block: 内容决定大小 可以改宽高
+凡是带有inline的元素，都有文字特性
+
+权重等级：
+！important》行间样式》ID》class|属性|伪类》标签|伪元素》通配符
+
+浮动元素产生了浮动流，所有产生了浮动流的元素，块级元素看不到他们
+产生了bfc的元素和文本类属性（inline）的元素以及文本都能看到浮动元素
+
+自适应的正方形                               自适应的圆形
+div{                                                在正方形的基础上添加border-radius:50%
+width:20%;
+padding-top:20%;
+border:1px solid #000;
+}
