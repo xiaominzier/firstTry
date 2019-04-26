@@ -1,0 +1,8 @@
+tapmode属性：
+1.tapmode具有速点击事件功能，在触发事件中加入tapmode可以消除JS中标准click事件的300毫秒延迟
+2.tapmode具有触发可显示样式的效果，tapmode='xxx'属性，’xxx‘为css样式类，当该元素touchstart touchmove的时候就会展现xxx样式
+parseTapmode
+解析元素 tapmode 属性，优化点击事件处理
+默认页面加载完成后，引擎会对 dom 里面的元素进行 tapmode 属性解析，若是之后用代码创建的 dom 元素，则需要调用该方法后 tapmode 属性才会生效
+
+
