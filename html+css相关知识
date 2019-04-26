@@ -19,8 +19,16 @@ rem ：相对于根标签即HTML的font-size值
 absolute 层模型 脱离原来位置进行定位（对后续元素会有影响）  相对于最近的有定位的父级进行定位，如果没有，相对于文档进行定位
 relative 保留原来位置进行定位  相对于自己原来的位置进行定位
 用relative作为参照物，用absolute进行定位（父相子绝）
-
-position:absolute  float:left/right;打内部把元素换成inline-block
+脱离文档流的三种方式：
+浮动（float）
+绝对定位（position：absolute）
+固定定位（position：fixed）
+脱离文档流后的元素有四个特性：
+1.不再区分行和快；
+2.如果本元素未设置宽度，脱离后的宽度将由其子元素撑开，高度也是；
+3.字围效果；
+4.贴靠现象 ；
+position:absolute  float:left/right;会默认把内部把元素换成inline-block
 报纸式布局：文字环绕图片
 img{
 	float:left;
