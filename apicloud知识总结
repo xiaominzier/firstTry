@@ -4,5 +4,28 @@ tapmode属性：
 parseTapmode
 解析元素 tapmode 属性，优化点击事件处理
 默认页面加载完成后，引擎会对 dom 里面的元素进行 tapmode 属性解析，若是之后用代码创建的 dom 元素，则需要调用该方法后 tapmode 属性才会生效
+execScript
+//在名为winName的window中执行jsfun脚本var jsfun = 'funcGoto();';
+api.execScript({
+    name: 'winName',
+    script: jsfun
+});
+//在名为winName的window中找到//名为frmName的frame，并在该frame中执行jsfun脚本var jsfun = 'funcGoto();';
+api.execScript({
+    name: 'winName',
+    frameName: 'frmName',
+    script: jsfun
+});
+//在当前window中找到//名为frmName的frame，并在该frame中执行jsfun脚本var jsfun = 'funcGoto();';
+api.execScript({
+    frameName: 'frmName',
+    script: jsfun
+});
+统一处理逻辑为：exec->window->frame
+
+在apicloud里调用bmap
+先通过openWin方法，打开百度地图窗口
+在窗口页面里通过openFrame方法，引入地图和其他图层
+
 
 
