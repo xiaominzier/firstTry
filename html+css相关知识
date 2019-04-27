@@ -13,6 +13,7 @@ rem ：相对于根标签即HTML的font-size值
        元素所占列数=100px/20px = 5rem
 
 盒模型不包括margin
+想要使用margin：0 auto;进行居中，必须给固定的宽度
 
 "${pageContext.request.contextPath}"
 
