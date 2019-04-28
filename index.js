@@ -2,12 +2,22 @@
 function init(){
     bindEvent();
 }
+var dialog = document.getElementsByClassName('dialog')[0];
+var tableData = [];  //定义存放表格数据的数组
 //绑定事件
 function bindEvent(){
     var menuList = document.getElementsByClassName("menu-list")[0];//事件冒泡，点击dd切换，给dl上添加点击事件
     menuList.addEventListener('click',changeMenu,false);//菜单栏切换
     var addStudentBtn = document.getElementById('add-student-btn');
-    addStudentBtn.addEventListener('click',addStudent,false);
+    addStudentBtn.addEventListener('click',addStudent,false);//false 含义是让它冒泡，不让它捕获
+    var tbody = document.getElementById('tbody');
+    tbody.addEventListener('click',tbodyClick,false);
+    var mask = document.getElementsByClassName('mask')[0];
+    mask.onclick = function(e){
+        dialog.classList.remove('show');
+    }
+    var editStudentBtn = document.getElementById("edit-student-btn");
+    editStudentBtn.addEventListener('click',editStudent,false);
 }
 function changeMenu(e){
     //console.log(e.target); //获取到dl的子元素
@@ -75,28 +85,50 @@ function addStudent(e) {
         form.reset(); //重置表单
     })
 }
+//编辑学生
+function editStudent(e){
+    e.preventDefault();
+    var form = document.getElementById('edit-student-form');  //获取新增表单元素
+    var data = getFormData(form); //获取到表单里输入的数据
+    if(!data){ //如果输入数据有误，不往下执行
+        return false;
+    }
+    //保存到服务器端
+    transferData('/api/student/updateStudent',data,function(){
+        //确认弹框是否跳转页面
+        var isTurnPage = window.confirm('是否更新数据？');
+        if(isTurnPage){  //如果是，则跳转到列表页
+            //手动触发学生列表导航的点击事件
+            var studentListTab = document.getElementsByClassName('list')[0];
+            studentListTab.click();
+            var mask = document.getElementsByClassName('mask')[0];
+            mask.click();
+        }
+        form.reset(); //重置表单
+    })
+}
 // 渲染右侧表格
 function renderTable() {
     // console.log(transferData('/api/student/findAll'))
     transferData('/api/student/findAll', "", function (res) {
-        var data = res.data;
+        var data = res.data;  //回调函数，返回表格中所有的数据
+        tableData = data; //把表格数据存入一个全局变量中
         var str = "";
         data.forEach(function (item, index) {  //循环数组   /*换行需要反义字符*/
             str += ' <tr>\
             <td>' + item.sNo +'</td>\
             <td>' + item.name + '</td> \
-            <td>' + item.sex + '</td>\
+            <td>' + (item.sex ? '女': '男') + '</td>\
             <td>' + item.email + '</td>\
-            <td>' + item.birth + '</td>\
+            <td>' + (new Date().getFullYear() - item.birth) + '</td>\
             <td>' + item.phone +'</td>\
             <td>' + item.address + '</td>\
             <td>\
-                <button class="btn edit">编辑</button>\
-                <button class="btn del">删除</button>\
+                <button class="btn edit" data-index='+ index +'>编辑</button>\
+                <button class="btn del" data-index='+ index +'>删除</button>\
             </td>\
         </tr>'
         });
-
         var tBody = document.getElementById('tbody');
         tBody.innerHTML = str;
     });
@@ -177,3 +209,41 @@ function getFormData(form){
     }
 }
 init();  //调用这个初始化函数
+
+//把事件绑定在tbody上，通过事件委托让它冒泡到编辑按钮上
+function tbodyClick(e) {  //表格内部按钮点击事件
+   // console.log(e.target);   e.target可以获取到表格中的所有子元素
+    var tagName = e.target.tagName.toLowerCase();  //默认tagName返回的是大写字母
+    if(tagName != "button"){
+        return false;
+    }
+    var isEdit = e.target.className.indexOf('edit') > -1;
+    var isDel = e.target.className.indexOf('del') > -1;
+    var index = e.target.getAttribute('data-index');
+    if(isEdit){
+        dialog.classList.add('show');
+        console.log(index);
+        renderForm(tableData[index]); //获取到当前点击的那一行表格数据
+    }else if(isDel){
+        var delConfirm = confirm('确认删除？');
+        if(delConfirm){
+            transferData('/api/student/delBySno', {
+                sNo:tableData[index].sNo
+            }, function () {
+                alert('已删除');
+                var list = document.getElementsByClassName('list')[0];
+                list.click();
+            });
+        }
+    }
+}
+//回填表单数据
+function renderForm(data){
+    console.log(data);
+    var form = document.getElementById("edit-student-form");
+    for(var prop in data){
+        if(form[prop]){
+            form[prop].value = data[prop];
+        }
+    }
+}
