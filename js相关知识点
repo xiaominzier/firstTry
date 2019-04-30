@@ -55,3 +55,18 @@ function test(origin,sub){
   }
   return -1; //所有循环都走完，没有找到，返回-1
 }
+查找数组中有最大连续增长子序列的长度
+var max = 1;  //记录所查过得最大字串的长度
+var nowMax = 1; //当前所查子串的长度
+for(var i=0; i<arr.length;i++){
+  if(arr[i] - arr[i-1] > 0){
+    nowMax ++;
+  }else{
+    max = nowMax > max ? nowMax : max;
+    nowMax = 1;
+  }
+}
+//处理数组中最后一个子序列是增长出来的
+max = nowMax > max ? nowMax : max;
+return max;
+
