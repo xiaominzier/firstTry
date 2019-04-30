@@ -1,0 +1,4 @@
+数组中：split("")将字符串转化为数组， reverse()反转数组中的内容，join("")将数组转换为字符串
+二分查找（提高查找效率，但前提是数组为有序数组。比如在数组中找到某个值，判断数组是否是对称数组）
+var low = 0; var high = arr.length-1; var mid = (low+high)/2; 通过for循环，不断改变low和high的值（low+i; high-i）
+循环时，如果知道循环的次数，就用for循环；如果不确定循环次数，就用while循环
