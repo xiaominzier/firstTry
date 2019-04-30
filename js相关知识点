@@ -38,4 +38,20 @@ function test(arr){
    return true;
   }
 }
-
+判断子串在原串第一次出现的位置  （其实就是indexOf的内部实现逻辑）
+function test(origin,sub){
+  if(!origin || !sub || origin.length==0 || sub.length){
+    return -1;
+  }
+  for(var i=0;i<origin.length-sub.length+1;i++){
+    for(var j=0;j<sub.length;j++){
+      if(sub[j] != origin[i+j]){  //i决定从哪个位置开始比
+        break;
+      }
+      if(j==sub.length-1){
+        return i;
+      }
+    }    
+  }
+  return -1; //所有循环都走完，没有找到，返回-1
+}
