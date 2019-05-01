@@ -148,6 +148,15 @@ border:1px solid #000;
 
 web标准指的是HTML、CSS、js相关标准
 浏览器中body默认的margin值：IE里是20px;主流浏览器是8px.
+用CSS实现三角形
+div{  (上三角，令其左、右、上背景透明)
+	width:0px;
+	height:0px;
+	border-left:20px solid transparent;
+	border-right:20px solid transparent;
+	border-top:20px solid transparent;
+	border-bottom:20px solid #000;
+}
 
  
  
