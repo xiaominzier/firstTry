@@ -70,3 +70,24 @@ for(var i=0; i<arr.length;i++){
 max = nowMax > max ? nowMax : max;
 return max;
 
+柯里化 ---- call 和 apply 的应用
+function sum(){
+  var sum = 0;
+  for(var i=0; i<arguments.length;i++){
+    sum += arguments[i];
+  }
+  return sum;
+}
+//函数 参数是函数  返回一个函数  这个函数本身是一个高阶函数
+function returnDeal(func){
+  //接收参数(从第一位之后往下截)
+  var arg = [].slice.call(arguments,1) //通过call，使this指向arguments(而此时的arguments是returnDeal里的10,20,30)
+   //arg(永远都是10,20,30。形成了一个闭包)
+  return function(){
+    //执行func(其实func就是sum函数，执行累加功能)
+    var _arg = arg.concat([].slice.call(arguments))  //此时arguments是在调用newSum时传入的参数，即30,40,50 （concat把参数10,20,30和30,40,50连接起来）
+    return func.apply(window,_arg);
+  }
+}
+var newSum = returnDeal(sum,10,20,30)
+newSum(30,40,50);
