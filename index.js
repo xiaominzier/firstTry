@@ -10,8 +10,10 @@ function bindEvent(){
     menuList.addEventListener('click',changeMenu,false);//菜单栏切换
     var addStudentBtn = document.getElementById('add-student-btn');
     addStudentBtn.addEventListener('click',addStudent,false);//false 含义是让它冒泡，不让它捕获
+    //给表格里的按钮添加点击事件
     var tbody = document.getElementById('tbody');
     tbody.addEventListener('click',tbodyClick,false);
+    //给弹出框的遮罩层添加点击事件
     var mask = document.getElementsByClassName('mask')[0];
     mask.onclick = function(e){
         dialog.classList.remove('show');
@@ -89,7 +91,7 @@ function addStudent(e) {
 function editStudent(e){
     e.preventDefault();
     var form = document.getElementById('edit-student-form');  //获取新增表单元素
-    var data = getFormData(form); //获取到表单里输入的数据
+    var data = getFormData(form); //获取到表单里动态输入的数据
     if(!data){ //如果输入数据有误，不往下执行
         return false;
     }
@@ -185,7 +187,7 @@ function saveData(url,param){
     xhr.send();
     return result;
 }
-//获取表单数据（编辑表单，新增表单）
+//获取表单中用户动态输入的数据（编辑表单，新增表单）
 function getFormData(form){
     var name = form.name.value;  //返回dom元素
     var sNo = form.sNo.value;
@@ -217,7 +219,7 @@ function tbodyClick(e) {  //表格内部按钮点击事件
     if(tagName != "button"){
         return false;
     }
-    var isEdit = e.target.className.indexOf('edit') > -1;
+    var isEdit = e.target.className.indexOf('edit') > -1;//类名中存在edit的类名
     var isDel = e.target.className.indexOf('del') > -1;
     var index = e.target.getAttribute('data-index');
     if(isEdit){
@@ -237,7 +239,7 @@ function tbodyClick(e) {  //表格内部按钮点击事件
         }
     }
 }
-//回填表单数据
+//回填表单数据（把表格中的数据填入到form表单中）
 function renderForm(data){
     console.log(data);
     var form = document.getElementById("edit-student-form");
