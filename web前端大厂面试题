@@ -1,0 +1,132 @@
+1.数组乱序
+法一：
+var arr = [1,2,3,4,5,6,7];
+var newArr = [];
+while(arr.length>0){
+    var num = Math.floor(Math.random()*arr.length);
+    newArr.push(arr[num]);
+    arr.splice(num,1);  //不断地删除原数组
+}
+console.log(newArr);
+法二：
+arr.sort(function(){
+  return Math.random() > 0.5 ? 1: -1  //返回1正序排，返回-1逆序排
+})
+console.log(arr);
+
+2.寻找一个单身狗
+var arr = [1,2,3,4,5,1,2,3,4];
+法一：（利用es6里的set）
+var set = new Set();
+for(var i=0;i<arr.length;i++){
+  if(set.has(arr[i])){
+    set.delete(arr[i]);
+  }else{
+    set.add(arr[i]);
+  }
+}
+console.log(...set);  //...表示去掉外面的括号以及引号
+法二：（利用对象的属性名不能重复）
+var obj = {};
+for(var i=0;i<arr.length;i++){
+  if(obj[arr[i]]){
+    delete obj[arr[i]];
+  }else{
+    obj[arr[i]] = true;
+  }
+}
+console.log(Object.keys(obj)[0]);
+法三：(用异或的数学思想)
+var result = 0;
+for(var i=0; i<arr.length;i++){
+  result ^= arr[i];
+}
+console.log(result);
+
+3.数组去重
+var arr = [1,2,3,4,5,1,2,4];
+法一：（利用es6里的set）
+var set = new Set();
+for(var i=0;i<arr.length;i++){ 
+    set.add(arr[i]);
+}
+console.log(set);
+法二：（利用对象的属性名不能重复）
+var obj = {};
+for(var i=0;i<arr.length;i++){ 
+    obj[arr[i]] = true;
+}
+console.log(Object.keys(obj)[0]);
+法三：
+var newArr = [];
+for(var i=0;i<arr.length;i++){
+  if(newArr.indexOf(arr[i])==-1){
+    newArr.push(arr[i]);
+  }
+}
+console.log(newArr);
+法四：
+Array.from(new Set(arr)); //from函数用来将其他对象转换成数组(这个其他对象可以使map，set等，也可以是类数组)
+
+4.深度克隆，浅克隆
+浅克隆：比如直接赋值，或是object.assign;特点是公用一个地址，一个改变，其他的也跟着改变
+深度克隆：（相互之间不影响）
+法一：通过json
+var obj = {
+  name:"panda",
+  age:19,
+  msg:{
+    a:1,
+    b:2
+  }
+  arr:[1,2,3]
+}
+var obj2 = JSON.parse(JSON.stringify(obj));//var str = JSON.stringify(obj);把对象转化为字符串  var obj2 = JSON.parse(str);//再把字符串
+重新生成一个新的json对象
+console.log(obj2);
+obj.name='aa',
+obj.age=18;
+console.log(obj2);
+两次结果相同，因为深度克隆，修改obj，不会影响obj2的值
+法二：通过递归
+function deepCloneArray(arr,newArr){
+    for(var i=0;i<arr.length;i++){
+      if(arr[i] instanceof Object || arr[i] instanceof Array){
+        var tempNewObj = {};
+        newArr[i] = deepClone(arr[i],tempNewObj);
+      }else{
+        newArr[i] = arr[i]
+      }
+    }
+  return newArr;
+}
+function deepCloneObject(obj,newObj){
+  for(var temp in obj){//遍历对象的所有属性
+    if(obj.hasOwnProperty(temp){
+      if(obj[temp]  instanceof Object ||obj[temp] instanceof Array){
+        var tempNewObj = {};
+        newObj[temp] = deepClone(obj[temp],tempNewObj);
+      }else{
+        newObj[temp] = obj[temp];
+      }
+    }
+  }
+  return newObj;
+}
+function deepClone(obj,newObj){
+  if(obj instanceof Array){
+    newObj = [];
+    return deepCloneArray(obj,newObj);
+  
+  }else if(obj instanceof Object){
+    newObj = {}
+    return deepCloneObject(obj,newObj);
+  
+  }else{//可能传了数，也可能传了个字符串
+    return newObj = obj;
+  }
+}
+var newObj = {};
+
+
+
