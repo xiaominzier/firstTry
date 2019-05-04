@@ -102,7 +102,7 @@ function deepCloneArray(arr,newArr){
 }
 function deepCloneObject(obj,newObj){
   for(var temp in obj){//遍历对象的所有属性
-    if(obj.hasOwnProperty(temp){
+    if(obj.hasOwnProperty(temp){  //判断是对象身上的属性，把原型上的属性排除出去
       if(obj[temp]  instanceof Object ||obj[temp] instanceof Array){
         var tempNewObj = {};
         newObj[temp] = deepClone(obj[temp],tempNewObj);
