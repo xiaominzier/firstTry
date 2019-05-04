@@ -1,0 +1,68 @@
+对数组进行遍历操作的方法：
+foreach  filter  map  every  some   reduce   reduceright
+
+every:一假全假
+Array.prototype.myEvery = function(func){
+  var _arr = this,len = _arr.length,param2=arguments[1] ||window,flag=true;  //param2改变当前this指向
+  for(var i=0;i<len;i++){
+    if(!func.apply(param2,[_arr[i],i,_arr])){//如果当前返回值有一个为假
+      flag = false;
+      break;
+    }
+  }
+  return flag;
+}
+var flag = personArr.myEvery(function(ele,index,self){
+  return ele.age > 15;
+},{name:'cst'});  //{name:'cst'}这个值就是为了改变this的指向
+
+reduce
+//reduce 返回一个值  传递两个参数，第一个是一个函数function（函数里有四个形参 preValue curValue(相当于当前的ele)  index self）   
+第二个是initialValue(初始化值)
+var initialValue = {name:'cst'};//这里这个第二个参数就不是改变this的一个作用，而是决定第一次preValue的值是什么
+var lastValue = personArr.reduce(function(preValue,curValue,index,self){
+  preValue.name += 1;
+  return preValue; //这个preValue相当于接力棒，不断接收函数每次执行的时候返回的值
+},initialValue)
+//自己实现reduce
+ Array.prototype.myReduce = function(func,initialValue){
+  var _arr = this,len = this.length,param2=arguments[2] || window;
+  for(var i=0;i<len;i++){
+    initialValue = func.apply(param2,[initialValue,_arr[i],i,_arr]);//param2要改变this的指向
+  }
+  return initialValue;
+ }
+ var lastValue = personArr.myReduce(function(preValue,curValue,index,self){
+  preValue.name += 1;
+  return preValue; //这个preValue相当于接力棒，不断接收函数每次执行的时候返回的值
+},initialValue,{dom:'dom'})
+
+//reduce应用
+var cookiesStr = "UM_distinctid=16a0f201ecd65f-091681bf57a717-3d644509-1fa400-16a0f201ece7d9;
+ i18next=zh-CN; userIcon=%2Fimg%2Fsignup%2F2-30.png; nickname=%E9%AB%98%E6%95%8F; curAppId=A6009221857744; 
+ curAppName=Lion*; typePackage=2; mcmOpened=0; appType=0; 
+ Hm_lvt_ae739dc4e9f16c0da7b6f2e4108cad83=1556423370,1556605429,1556851735,1556933410; 
+ Qs_lvt_214477=1556423370%2C1556605429%2C1556851734%2C1556933409; LXB_REFER=www.baidu.com; 
+ mediav=%7B%22eid%22%3A%22483636%22%2C%22ep%22%3A%22%22%2C%22vid%22%3A%22_*H%3F%5Btgv%2Fh%3Ac_8w%3AYf%605%22%2C%22ctn%22%3A%22%22%7D; 
+ i18next=zh-CN; Hm_lpvt_ae739dc4e9f16c0da7b6f2e4108cad83=1556933506; 
+ Qs_pv_214477=3561140192295818000%2C1116991637344439300%2C2082537260409073400%2C1713733497672118500%2C3034896859287241000";
+ 
+function parseCookie(str){
+  var arrCookie = str.split('; '); //先拆分成数组
+  console.log(arrCookie);
+  //遍历数组的时候，把属性名和属性值放到对象里,用reduce方法循环遍历数组
+  var cookieObj = {};
+  arrCookie.reduce(function(preValue,curValue,index,self){
+    console.log(preValue,curValue);
+    var curArr = curValue.split('=');
+    console.log(cookieObj,curArr,curArr[0],curArr[1]);
+    cookieObj[ curArr[0] ] = curArr[1];
+    return preValue;
+  },cookieObj); //cookieObj作为一个初始值传入进来
+  return cookieObj;
+}
+var cookieObj = parseCookie(cookiesStr);  //返回一个对象
+console.log(cookieObj);
+
+ 
+ 
