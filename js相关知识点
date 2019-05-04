@@ -1,3 +1,5 @@
+原始值：栈内存（string）
+引用值：堆内存（array，object）
 JavaScript语言特点：
 弱类型语言，单线程，跨平台，基于对象的，解释性语言
 
@@ -146,7 +148,7 @@ length 设置或返回数组中元素的数目。
 prototype 使您有能力向对象添加属性和方法。 
 
 Array 对象方法
-改变原数组
+改变原数组（只有这七个能改变原数组）
 push() 向数组的末尾添加一个或更多元素，并返回新的长度。
 pop() 删除并返回数组的最后一个元素 
 reverse() 颠倒数组中元素的顺序。 
@@ -208,11 +210,26 @@ arr.sort(function(a,b){
   return a.age - b.age;
 })
 返回一个字符串的字节长度
+function retBytes(str){
+  var num = str.length;
+  for(var i=0;i<str.length;i++){
+    if(str.charCodeAt(i)>255){
+      num++;
+    }
+  }
+  return num;
+}
+//根据字符字节长度排序
+arr.sort(function(a,b){
+  return retBytes(a) - retBytes(b);
+})
 
-
-concat() 连接两个或更多的数组，并返回结果。 
-join() 把数组的所有元素放入一个字符串。元素通过指定的分隔符进行分隔。 
-slice() 从某个已有的数组返回选定的元素 
+不改变原数组
+concat() 连接两个或更多的数组，并返回结果（返回一个新数组）。 
+join() 把数组的所有元素放入一个字符串。元素通过指定的分隔符进行分隔。（将数组转换成字符串)
+split() 将字符串转换成数组
+slice() 从某个已有的数组返回选定的元素   两个参数（从该位开始截取，截取到该位）；传一个参数（从该位截取，一直截到最后）；
+不传参数，就空截 （应用：将一个类数组转换成数组）； 传负数，从后面开始截
 toSource() 返回该对象的源代码。 
 toString() 把数组转换为字符串，并返回结果。 
 toLocaleString() 把数组转换为本地数组，并返回结果。 
