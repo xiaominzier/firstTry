@@ -1,5 +1,6 @@
 add（）将前面（调用的元素）和后面（选中的元素）的元素结合起来，统一操作
-end（）在链式操作中，回退到上一级  （类似find（）方法里的prevObject这个属性）
+end（）在链式操作中，回退到最初调用的对象  （类似find（）方法里的prevObject这个属性）
+如：$('.wrapper').add('.demo').css({}).end();  //回退到.wrapper这一层
 原理：（入栈出栈的操作）
 jQuery.prototype.pushStack = function(dom){ //pushStack作用是存入一个prevObject
   //此时这个dom是  newObj
