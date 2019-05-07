@@ -29,3 +29,30 @@ jQuery.prototype.add = function(selector){
 jQuery.prototype.end = function(){
   return this.prevObject;
 }
+
+.val() 针对form表单里的input框  获取值时也是获取的第一个
+区别nextAll和nextUntil
+nextAll 接下来所有的
+nextUntil 传两个参数 （截止到哪儿、元素筛选）
+$('input[type="checkbox"]').eq(0).click(function(){
+  if($(this).prop('checked')){
+    $(this).nextAll().prop('checked',true);
+  }else{
+    $(this).nextAll('input[type="checkbox"]').prop('checked',false);
+  }
+})
+$('h1').next().click(function(){
+  if($(this).prop('checked')){
+    $(this).nextUntil('h1','input[type="checkbox"]').prop('checked',true);
+  }else{
+    $(this).nextUntil('h1','input[type="checkbox"]').prop('checked',false);
+  }
+})
+$('h2').next().click(function(){
+  if($(this).prop('checked')){
+    $(this).nextUntil('h2','input[type="checkbox"]').prop('checked',true);
+  }else{
+    $(this).nextUntil('h2','input[type="checkbox"]').prop('checked',false);
+  }
+})
+
