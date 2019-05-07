@@ -90,3 +90,102 @@ $('.wrapper').click(function(ele,index){
  prepend()   在最前插入
 
 remove（）和detach（）都是删除元素，区别是事件上。remove（）会把事件也删掉，detach（）会把事件保留
+
+wrap()  给元素外面套一层div
+$('.demo').wrap('<div class="wrapper"></div>');  给每个类名为demo的div外面套一层类名为wrapper的div
+等价于 $('.demo').wrap(function(index){
+  return '<div class="wrapper'+ index +'"></div>';
+})
+wrapInner() 给元素的内部标签的外层套一层
+wrapAll()  给一堆div的外层套一层div
+unwrap() 删掉直接父级的一层div
+
+clone() 克隆jQuery对象，不传参数的话，不可以克隆事件
+clone(true)  传了true的话，可以克隆事件
+场景使用：利用clone直接把数据渲染到模板里
+data -> jquery 操作data 操作dom ->dom
+<table class="stb">
+<tr class="tpl">
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+</table>
+var stuArr = [
+  { name:'cst',age:18 },
+  { name:'ld',age:18 },
+  { name:'jc',age:18 }
+];
+stuArr.foreach(function(ele,index){
+  var oCloneDom = $('.tpl').clone().removeClass('tpl');
+  oCloneDom.find('td').eq(0).text(ele.name).next().text(ele.age);
+  $('.stb').append(oCloneDom);
+})
+
+之前prop() 是操作jQuery中的dom对象
+但是prop中的属性不能clone出来
+而data()方法是给jQuery中的dom存信息、存数据、存状态
+$('.demo').data({
+  name:'cst',
+  age:18,
+  sex:true
+})
+eg:
+<body>
+<div class="wrapper">
+    <div class="tpl">
+        <p></p>
+        <span></span>
+        <button>add</button>
+    </div>
+    <p class="show">
+        <span>sum</span>
+        <span class="sum">0</span>
+    </p>
+</div>
+</body>
+<script>
+    var shopArr = [
+        {
+            name: 'jc',
+            shopName:'nike',
+            price:110,
+            id:'1001'
+        },
+        {
+            name: 'cst',
+            shopName:'adidas',
+            price:90,
+            id:'1001'
+        },
+        {
+            name: 'ld',
+            shopName:'uk',
+            price:120,
+            id:'1001'
+        }
+    ]
+    shopArr.forEach(function(ele,index){
+        var oCloneDom = $('.tpl').clone().removeClass('tpl');
+        //div  jquery cache
+        oCloneDom.data({
+            id:ele.id,
+            shopName:ele.shopName,
+            price:ele.price
+        }).find('p')
+            .text(ele.name)
+                .next()
+                    .text(ele.price);
+        oCloneDom.insertBefore($('.show'));
+    })
+    $('.wrapper button').click(function(){
+        $('.sum').text( +$('.sum').text() + $(this).parent().data('price'));
+    })
+</script>
+
+
+
+
+
+
+
