@@ -83,4 +83,10 @@ $('.wrapper').click(function(ele,index){
  slice() 截取 返回的是$对象 两个参数：左闭右开
  eg: $('li').slice(1,6).css({backgroundColor:'red'});
  
+ $('a').insertBefore('b').css()  a插入到b的前面,谁在前面，就是操作谁
+ $('a').before($('b')).css()  b插在a的前面  before里面填谁，谁就在上面 
+ appendTo()  插入到（子级插入到父级里）
+ append()    插入（父级里插入子级） 在最后插入
+ prepend()   在最前插入
 
+remove（）和detach（）都是删除元素，区别是事件上。remove（）会把事件也删掉，detach（）会把事件保留
