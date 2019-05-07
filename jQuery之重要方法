@@ -56,3 +56,31 @@ $('h2').next().click(function(){
   }
 })
 
+$('.wrapper').click(function(ele,index){
+  if($(this).hasClass('active')){
+    $(this).removeClass('active');
+  }else{
+    $(this).addClass('active');
+  }
+})
+ siblings()  获取兄弟元素  作用：可以用于进行反选功能
+ parent()  上一级父元素
+ eg:
+ var showArrs = [{name:'nike',id:'101'},{name:'adidas',id:'102'}];
+ var str = '';
+ showArrs.foreach(function(ele,index){
+  str += '<div class="show" data-id="'+ele.id+'"><p>'+ele.name+'</p><button>add</button></div>';
+ });
+ $('.wrapper').html(str);
+ var carArr = [];
+ $('button').click(function(){
+  carArr.push($(this).parent().attr('data-id'));
+ })
+ parents()  获取多个上级元素，可以通过传参数控制;不传参数，获得所有父级
+ eg:parents('.class')
+ closest()  离它最近的父级（包含自己）
+ offsetParent() 离它最近的有定位的父级
+ slice() 截取 返回的是$对象 两个参数：左闭右开
+ eg: $('li').slice(1,6).css({backgroundColor:'red'});
+ 
+
