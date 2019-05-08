@@ -219,9 +219,37 @@ $('.demo').on('click',function(e,a,b,c,d){ //e.target 事件源对象，获取�
     console.log('click',a,b,c,d);
 })
 $('.demo').trigger('click',[10,20,30,40]);  //通过数组形式传参数
-
-
-
+内部实现原理（这里只能绑定自定义事件并自动触发自定义事件）
+jquery.prototype.myOn = function(type,handle){
+  for(var i=0;i<this.length;i++){  //this是当前jQuery对象
+    if(!this[i].cacheEvent){  //设置一个缓存对象
+      this[i].cacheEvent;
+    }
+    if(!this[i].cacheEvent[type]){  //看缓存对象中是否有这个类型，通过对象的属性不能重复来判断
+      this[i].cacheEvent[type] = [handle];
+    }else{
+       this[i].cacheEvent[type].push(handle);
+    }
+  }  
+}
+jquery.prototype.myTrigger = function(type){
+  var params = arguments > 1 ? [].slice.call(arguments,1) : []; //获取传过来的参数，arguments表示实参列表，把参数转化成数组形式
+  var self = this;  //这里的this是调用myTrigger这个方法的jQuery对象
+  for(var i=0;i<this.length;i++){
+    if(this[i].cacheEvent[type]){
+      this[i].cacheEvent[type].foreach(function(ele,index){
+        //这里的this是window，所以需要在外面先把this保存起来
+        ele.apply(self,params);
+      })
+    }
+  }
+}
+.hover()   (就等于mouseenter+mouseleave)
+$('.demo').hover(function(){
+  //移入
+},function(){
+  //移出
+})
 
 
 
