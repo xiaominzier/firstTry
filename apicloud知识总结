@@ -24,8 +24,8 @@ api.execScript({
 统一处理逻辑为：exec->window->frame
 
 在apicloud里调用bmap
-先通过openWin方法，打开百度地图窗口
-在窗口页面里通过openFrame方法，引入地图和其他图层
+先通过openWin方法，打开一个入口页面
+在入口页面里通过openFrame方法，引入地图，再在打开地图的回调函数里通过openFrame打开其他图层页面
 
 
 
