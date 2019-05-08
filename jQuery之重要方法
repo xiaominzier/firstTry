@@ -1,3 +1,4 @@
+jquery一些dom属性操作
 add（）将前面（调用的元素）和后面（选中的元素）的元素结合起来，统一操作
 end（）在链式操作中，回退到最初调用的对象  （类似find（）方法里的prevObject这个属性）
 如：$('.wrapper').add('.demo').css({}).end();  //回退到.wrapper这一层
@@ -25,7 +26,6 @@ jQuery.prototype.add = function(selector){
   this.pushStack(newObj);
   return newObj;
 }
-
 jQuery.prototype.end = function(){
   return this.prevObject;
 }
@@ -63,6 +63,7 @@ $('.wrapper').click(function(ele,index){
     $(this).addClass('active');
   }
 })
+
  siblings()  获取兄弟元素  作用：可以用于进行反选功能
  parent()  上一级父元素
  eg:
@@ -104,6 +105,9 @@ clone() 克隆jQuery对象，不传参数的话，不可以克隆事件
 clone(true)  传了true的话，可以克隆事件
 场景使用：利用clone直接把数据渲染到模板里
 data -> jquery 操作data 操作dom ->dom
+.tbl{
+  display:none;
+}
 <table class="stb">
 <tr class="tpl">
   <td></td>
@@ -182,6 +186,42 @@ eg:
         $('.sum').text( +$('.sum').text() + $(this).parent().data('price'));
     })
 </script>
+
+jQuery事件绑定
+.on()  绑定事件  可以传四个参数  type selector data handle
+事件委托 点击li触发事件，但是把事件绑定在ul上
+<ul>
+  <li></li>
+  <li></li>
+  <li></li>
+</ul>
+$('ul').on('click','li',function(e){ //e.target 事件源对象，获取到li; 第二个参数li，就是为了当事件冒泡到ul上的时候，排除ul，只让li执行;
+    $(e.target).text()
+})
+.on() 也可以同时绑定多个事件
+er:$('.demo').on({
+  click:function(){
+    console.log('click');
+  },
+  mouseenter:function(){
+    console.log('mouseenter');
+  },
+  mouseleave:function(){
+    console.log('mouseleave');
+  }
+})
+.one() 只执行一次函数, 类似于setTimeOut() 
+.off()  解绑事件  怎么绑定就怎么解绑
+$('ul').on('click','li',clickOne);
+$('ul').off('click','li',clickOne);
+.trigger()  自动触发系统以及自定义的事件
+$('.demo').on('click',function(e,a,b,c,d){ //e.target 事件源对象，获取到li; 第二个参数li，就是为了当事件冒泡到ul上的时候，排除ul，只让li执行;
+    console.log('click',a,b,c,d);
+})
+$('.demo').trigger('click',[10,20,30,40]);  //通过数组形式传参数
+
+
+
 
 
 
