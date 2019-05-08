@@ -318,7 +318,52 @@ $('.demo')
             .animate({width:'+=50',height:'+=50',left:'+=100',top:'-=100'},1000,'swing');
 jQuery.fx.off = true;  //去掉动画，直接到达目标点
 
+了解queue（入队） dequeue（出队） clearQueue（清空队列）
+//jquery queue dequeue clearQueue
+    //queue  入队
+    //创建队列时  传两个参数  type  content
+    //队列在内部就是一个数组，有一个对象 {chain:[function,function,function]}
+    $('.demo').queue('chain',function(){  //给队列起名为chain,创建队列就是把内容填入到数组里
+    console.log('over1');
+    }).queue('chain',function(){
+        console.log('over2');
+    }).queue('chain',function(){
+        console.log('over3');
+    })
+    console.log($('.demo').queue('chain'));
+    //dequeue 出队  type
+    $('.demo').dequeue('chain');  //只出队当前第一个
 
+    //给回调函数里传一个next，出队时所有的都出队
+    $('.demo').queue('chain',function(next){  //给队列起名为chain,创建队列就是把内容填入到数组里
+        console.log('over1');
+        next();
+    }).queue('chain',function(next){
+        console.log('over2');
+        next();
+    }).queue('chain',function(next){
+        console.log('over3');
+    })
+    console.log($('.demo').queue('chain'));
+    //dequeue 出队  type
+    $('.demo').dequeue('chain');  //所有的都出队
+
+    //clearQueue  清空所有队列
+    
+    //应用
+    $('.demo')
+    .css({position:'absolute',left:0,top:0,width:100,height:100,backgroundColor:red})
+    .on('click',function () {
+            $(this).dequeue('chain');
+    }).queue('chain',function(next){  //给队列起名为chain,创建队列就是把内容填入到数组里
+            $(this).animate({width:'+=50',height:'+=50',left:'+=100',top:'+=100'});
+            next();
+    }).queue('chain',function(next){  //给队列起名为chain,创建队列就是把内容填入到数组里
+            $(this).animate({width:'+=50',height:'+=50',left:'+=100',top:'+=100'});
+            next();
+    }).queue('chain',function(next){  //给队列起名为chain,创建队列就是把内容填入到数组里
+            $(this).animate({width:'+=50',height:'+=50',left:'+=100',top:'+=100'});
+    })
 
 
 
