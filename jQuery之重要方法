@@ -251,9 +251,42 @@ $('.demo').hover(function(){
   //移出
 })
 
-
-
-
+jQuery动画相关方法：
+.hide()  .show()  .toggle()
+宽、高、透明度等等都发生变化
+参数：null或（duration、easing、callback）
+$('p').on('click',function(){
+  /*if($(this).next().css('display')=='none'){
+    $(this).next().show(1000,'swing');
+  }else{
+    $(this).next().hide(1000,'linear');
+  }*/
+  等价于 $(this).next().toggle();
+})
+fadeIn 淡入 fadeOut 淡出  fadeTo 渐进到 fadeToggle
+针对的只是透明度的变化
+$('p').on('click',function(){
+  /*if($(this).next().css('display')=='none'){
+    $(this).next().fadeIn(1000,'swing');
+  }else{
+    $(this).next().fadeOut(1000,'linear');
+  }*/
+  等价于 $(this).next().fadeToggle();
+})
+$('p').on('click',function(){
+  /*if($(this).next().css('display')=='none'){
+    $(this).next().fadeTo(1000,0.6,'swing',function(){
+      console.log(over);
+    });
+  }else{
+    $(this).next().fadeTo(1000,0.1,'linear',function(){
+      console.log(over);
+    });
+  }*/
+  等价于 $(this).next().fadeToggle();
+})
+slideDown 卷出  slideUp 卷入  slideToggle
+主要关注的是高度的变化
 
 
 
