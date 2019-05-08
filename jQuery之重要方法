@@ -288,5 +288,38 @@ $('p').on('click',function(){
 slideDown 卷出  slideUp 卷入  slideToggle
 主要关注的是高度的变化
 
+animate() 
+//target  duration  speed(easing)  callback
+//默认duration是400   ； slow是600 ；fast是200  ；swing是先慢后快，加速运动
+/*$('.demo').animate({width:'+=50',height:'+=50',left:'+=100',top:'+=100'},1000,'swing',function(){
+    alert(over);
+});*/
+//实现点击分两次动画  (在回调里嵌套太多的话就会遇到回调地狱)
+$('.demo').click(function(){
+    /*$(this).animate({width:'+=50',height:'+=50',left:'+=100',top:'+=100'},1000,'swing',function(){
+        $(this).animate({width:'+=50',height:'+=50',left:'+=100',top:'+=100'},1000,'swing');
+    });*/
+    //animate()里内部提供了内置队列，会把每次运动任务存入队列中，执行完前一个才能执行之后的，所以无需在调用函数里执行嵌套代码
+    $(this).animate({width:'+=50',height:'+=50',left:'+=100',top:'+=100'},1000,'swing')
+        .animate({width:'+=50',height:'+=50',left:'+=100',top:'+=100'},1000,'swing');
+})
+stop()停止运动 //stop() 停止当前运动  stop(true) 停止所有运动  stop(true,true) 停止当前运动并且迅速移动到当前运动的目标点
+$('#stopBtn').on('click',function(){
+      $('.demo').stop();  
+})
+finish()  //finish() 没有参数  直接到达最后一次运动的目标点
+$('#finishBtn').on('click',function(){
+    $('.demo').finish();  
+})
+delay()  在运动过程中进行延迟
+$('.demo')
+        .animate({width:'+=50',height:'+=50',left:'+=100',top:'+=100'},1000,'swing')
+          .delay(1000)
+            .animate({width:'+=50',height:'+=50',left:'+=100',top:'-=100'},1000,'swing');
+jQuery.fx.off = true;  //去掉动画，直接到达目标点
+
+
+
+
 
 
