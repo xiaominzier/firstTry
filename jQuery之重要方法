@@ -364,7 +364,38 @@ jQuery.fx.off = true;  //去掉动画，直接到达目标点
     }).queue('chain',function(next){  //给队列起名为chain,创建队列就是把内容填入到数组里
             $(this).animate({width:'+=50',height:'+=50',left:'+=100',top:'+=100'});
     })
+    
+queue,dequeue 内部实现原理
+jquery.prototype.myQueue = function(type,handle){
+        var queueObj = this;  //this就是外界调用myQueue这个方法时的jquery dom对象
+        var queueName = arguments[0] || 'fx';  //实参列表里的第一个参数，也就是type，即队列的名字
+        var addFunc = arguments[1] || null;  //实参列表的第二个参数，也就是要执行的操作函数
+        var len = arguments.length;
+        //根据len的值判断是取还是创建
+        //获取队列
+        if(len==1){
+            return queueObj[0][queueName];   //返回队列数组
+        }
+        //创建队列或往已有队列中添加内容  queueObj[0]代表的就是jQuery的dom对象
+        queueObj[0][queueName] == undefined ? [addFunc] : queueObj[0][queueName].push(addFunc);//判断该对象中有没有队列名（如：chain），没有就创建一个新的，有就往进push
+        return this; //进行链式操作的关键
+    }
+    jquery.prototype.myDequeue = function(type){
+        var self = this;
+            var queueName = arguments[0] || 'fx';
+            var queueArr = this.myQueue(queueName);
+            var currfunc = queueArr.shift();  //拿出第一个数组中的元素(即第一个操作函数来进行执行)
 
-
+            //递归的出口
+            if(currfunc == undefined){
+                return;
+            }
+            //通过递归
+            var next = function(){  //next()里的this因为没有jQuery对象调用，而是直接执行next()，所以这里的this是指window，不能直接用this
+                self.myDequeue(queueName);
+            }
+            currfunc(next);   //next作为参数传给当前执行的函数
+            return this;
+    }
 
 
