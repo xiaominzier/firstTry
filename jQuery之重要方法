@@ -398,4 +398,36 @@ jquery.prototype.myQueue = function(type,handle){
             return this;
     }
 
-
+animate实现原理(以及)
+jquery.prototype.myAnimate = function(json,callback){ //json表示运动的目标点，callback表示回调函数
+        var len = this.length;
+        var self = this;
+        //最后添加到队列里的内容函数
+        var baseFunc = function(next){
+            var times = 0;
+            for(var i=0;i<len;i++){  //通过for循环，让所有的dom都执行，运动到目标点
+                startMove(self[i],json,function () {
+                    times++;
+                    if(times == len){
+                        callback && callback();
+                        next();
+                    }
+                })
+            }
+        }
+        //进行入队
+        this.myQueue('fx',baseFunc);
+        if(this.myQueue('fx').length ==1 ){ //入队之后进行出队
+            this.myDequeue('fx');
+        }
+        return this;
+    }
+    jquery.prototype.myDelay = function (duration) {
+        var queueArr = this[0]['fx']; //获取到队列数组（要根据队列名称来获取，但一般不传队列名称，所以用默认的'fx'）
+        queueArr.push(function (next) {  //往队列里再填入一个函数
+            setTimeout(function () {
+                next();
+            },duration);
+        })
+        return this;
+    }
