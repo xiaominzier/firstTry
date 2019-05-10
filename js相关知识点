@@ -266,10 +266,26 @@ scrollBy  按照指定的像素值来滚动内容
 scrollTo   把内容滚动到指定的坐标
 open  弹出一个新的窗口
 
-
 navigator 包含客户端浏览器的信息
+构造函数是Navigator
+userAgent:返回由客户机发送服务器的user-agent头部的值；包括浏览器内核 操作系统 操作系统版本  浏览器版本 是否移动端访问 浏览器名称
+onLine：返回是否处于脱机模式的布尔值
+
 history 包含了浏览器窗口访问过的URL
+length: 浏览历史记录的次数
+back：退回后一个
+forward：前进一个
+go():负数是后退；正数是前进
+
 location 包含了当前URL的信息
+对象属性：设置或返回
+eg：url="https://www.baidu.com:443/s?ie=utf-8&&f=8#dasdas";
+https:// 协议                location.protocol
+www.baidu.com:443 域名       location.host
+/s 路径                      location.pathname
+?ie=utf-8&&f=8 参数          location.search
+#dasdas 锚点                 location.hash  (只有这个属性改变不会刷新页面)--》单页面应用（路由）
+
 screen 包含客户端显示屏的信息
 
 
