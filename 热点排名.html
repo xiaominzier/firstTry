@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            list-style: none;
+        }
+        .tpl{
+            /*display:none;*/
+        }
+        .clearF::after{   /*利用伪元素清除浮动*/
+            content:'';
+            display:block;
+            clear:both;
+            overflow:hidden;
+        }
+        .wrapper{  /*不用给高度，由内容撑开*/
+            border:1px solid #ccc;
+            padding:10px 5px;
+            width:350px;
+            margin:100px auto 0px;
+        }
+        .headSection{
+            margin-bottom: 10px;
+        }
+        .hot{
+            font-size:18px;
+            font-weight:bold;
+            float:left;
+        }
+        .change{
+            float:right;
+            color:#08f;
+            cursor:pointer;
+        }
+        .showSection li{
+            padding:5px 0;
+            border-bottom:1px solid #ccc;
+        }
+        .num{
+            color:#fff;
+            background-color:#0bf;
+            width:20px;
+            height:20px;
+            text-align:center;
+            display:inline-block;
+        }
+        .msg{
+            float:right;
+        }
+        .msg::after{
+            content:'';
+            display:inline-block;
+            width:15px;
+            heigth:15px;
+            background-size:100% 100%;
+            background-position-y: 4px;
+        }
+        .msg.up::after{
+            background-image:url("up.png");
+        }
+        .msg.down::after{
+            background-image:url("down.png");
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="headSection clearF">
+            <span class="hot">搜索热点</span>
+            <span class="change">换一换</span>
+        </div>
+        <ul class="showSection">
+            <li class="tpl clearF">  <!--只起到模板的作用-->
+                <span class="num">1</span>
+                <span class="title">金星</span>
+                <span class="msg up">23456</span>
+            </li>
+        </ul>
+    </div>
+</body>
+<script src="JQuery3.3.1.js"></script>
+<script src="serverData.js"></script>
+<script>
+    console.log(data);
+    (function(data){
+        //初始化变量
+        var $wrapper = $(".wrapper");
+        var $showSection = $wrapper.find('.showSection');
+        var colorsArr = ['#f54545','#ff8547','#ffac38'];
+        var curPage = 0;  //表示当前处在第一页
+        var totalPage = Math.ceil(data.length /10);  //计算数据总共能有多少页（向上取证）
+        $showSection.hide();
+        function bindEvent() { //换一换的时候，是页数的变化
+            $wrapper.find('.change').on('click',function(){
+                //共四页
+                //0 1 2 3 （通过对总页数取余，实现总是0 1 2 3 这样的变化）
+                curPage = ++curPage % totalPage;
+                renderPage(data);
+            });
+        }
+        function renderPage(data){
+            //清空之前的值
+            //empty() 清空所有子元素
+            $showSection.hide().find('.showItem').empty(); //不能把模板也清空，所以通过后克隆的类来清空
+            //根据数据渲染页面
+            //每页显示的数据数量  一页显示10条数据，不足10条，有几条显示几条
+            var len = (data.length - curPage*10) >= 10 ? 10 : data.length - curPage*10;
+            //控制每页应该渲染多少数据
+            for(var i=0;i<len;i++){
+                var $clone = $wrapper.find('.tpl').clone().removeClass('.tpl').addClass('.showItem');
+                var ele = data[i+curPage*10];  //第一页从0开始，第二页从10开始
+                $clone.children('span').eq(0)
+                    .text(i+curPage*10+1).css('background',curPage==0&&colorsArr[i+curPage])
+                        .next().text(ele.title)
+                            .next().text(ele.search)
+                                .addClass(ele.search>ele.hisSearch?'up':'down');
+                $showSection.append($clone);
+            }
+            $showSection.fadeIn();
+        }
+        bindEvent();
+        renderPage(data);
+    })()
+</script>
+</html>
