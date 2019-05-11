@@ -468,3 +468,66 @@ $('p').on('click',function(e){
   $('p span').index($(e.target));
 })
 
+
+jquery工具方法  （之前讲的都是实例方法）
+typeof()  //里面的数据是什么类型  特殊typeof(null) --> Object
+undefined  String  Number  Boolean  Object  Function  不精确
+$.type(); //里面的数据到底是什么  更精确
+console.log($.type(undefined)); //undefineed
+console.log($.type('abc')); //string
+console.log($.type(123)); //number
+console.log($.type(true)); //boolean
+console.log($.type(function(){})); //function
+console.log($.type(null)); //null
+console.log($.type({})); //object
+console.log($.type([1,2,3,4])); //array
+console.log($.type(new Date())); //date
+console.log($.type(new Number())); //number
+console.log($.type(new Person())); //object
+function Person(){}
+$.isArray([1,2,3]) 
+$.isFunction(function(){})
+特殊：
+$.isFunction((function(){}()));  //false  立即执行函数返回的是空（null）
+$.isWindow(window)  true   //在遇到iframe时，有用
+$.trim()   去掉前后空格，返回的是字符串
+$.proxy() 改变this指向， 类似于bind()
+eg:
+function show(){
+  console.log(this);
+}
+var obj = {
+  name:'deng',
+  age:12
+}
+var showProxy = $.proxy(show,obj);
+showProxy();  //此时this指向obj
+单对象编程 ，通过this来实现，类似立即执行函数 ， 防止变量污染
+var list ={
+  init:function(){
+    this.ms = 123;
+    this.dom = document.getElementById('demo');
+    this.bindEvent();
+  },
+  bindEvent:function(){
+   // this.dom.onclick = this.show;  //执行完这句代码后，this变成了dom，已经不是最初的list了
+   //通过proxy改变回来this指向
+   this.dom.onclick = $.proxy(this.show,this);
+  },
+  show:function(){  //执行完上面bindEvent方法后，this变成了dom，已经不是最初的list了，所以要在上面就改了
+    console.log(this.produseMs(this.ms))    
+  }
+  produseMs:function(ms){
+    return ms + 234;
+  }
+}
+list.init();
+
+$.noConflict();  //防止变量名冲突
+var $C = $.noConflict();
+这里$C其实就是$
+
+
+
+
+
