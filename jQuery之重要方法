@@ -431,3 +431,40 @@ jquery.prototype.myAnimate = function(json,callback){ //json表示运动的目�
         })
         return this;
     }
+    
+jquery实例方法---位置图形
+位置坐标图形大小相关方法：
+.offset()  永远参照文档定位（与原生js里的offSet有区别：原生是相对于最近的有定位的父级的偏移量） 可以获取也可以赋值
+.position()  和css定位规则一样   只能获取，不能赋值
+.scrollTop()  滚动距离（距顶部）  可以获取也可以赋值
+.scrollLeft()  滚动距离（距左边）  可以获取也可以赋值
+.width() .heigth()                      content
+.innerWidth()  .innerHeigth()           content+padding
+.outerWidth()  .outerHeight()           content+padding+border
+.outerWidth(true) .outerHeight(true)    content+padding+border+margin
+
+遍历索引相关方法：
+.each()  .index()  .children()
+eg:$('li').each(function(index,ele){  //ele就是原生js dom对象
+  $(ele).text(index).addClass('demo'+index);
+})
+<p>
+  <span></span>
+  <i></i>
+</p>
+$('p').children().each(function(index,ele){
+  if(ele.nodeName=='I'){
+    $(ele).text('i-'+index);
+  }else{
+    $(ele).text('span-'+index);
+  }
+})
+.index() 获取某个元素的索引
+$('ul').on('click','li',function(e){
+  $(e.target).index();
+})
+.index(传参数)  可以起到过滤的作用
+$('p').on('click',function(e){
+  $('p span').index($(e.target));
+})
+
