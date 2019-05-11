@@ -522,10 +522,30 @@ var list ={
   }
 }
 list.init();
-
 $.noConflict();  //防止变量名冲突
 var $C = $.noConflict();
 这里$C其实就是$
+$.each();  //是arr.foreach的前身
+var arr=[1,2,3,4];
+$.each(arr,function(index.ele){
+  console.log(ele);
+})
+$.map()  //是arr.map的前身   不改变原数组，返回一个新数组
+var a = $.map(arr,function(index.ele){
+  return ele*index;
+})
+console.log(a);  // 结果[0,2,6,12]
+$.parseJSON   ---->   JSON.parse(data+"")  严格json字符串转换成对象-原生JSON.parse()
+var json='{ "a":123,"b":"str","c":true}'
+var a = $.parseJSON(json)
+$.makeArray()  //一个参数 --- 传一个类数组，转换成数组    内部实现原理：[].slice.call(obj,0) 就是把一个类数组转换成数组
+var obj = {0:"a",1:"b",2:"c",length:3,/*slice:Array.prototype.slice*/}
+var arr = $.makeArray(obj);   //结果为【"a",:b","c"】
+//两个参数（把前面的放入后面里面，和后面的类型保持一致）
+$.makeArray("d",obj);  把d放入类数组里
+
+
+
 
 
 
