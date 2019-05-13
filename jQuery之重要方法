@@ -544,10 +544,60 @@ var arr = $.makeArray(obj);   //结果为【"a",:b","c"】
 //两个参数（把前面的放入后面里面，和后面的类型保持一致）
 $.makeArray("d",obj);  把d放入类数组里
 
+$.extend()  工具方法  用$.直接获取
+$.fn.extend()  实例方法   用$().获取
+区别：
+this不同   this-->$   this-->$.fn
+功能：
+1.扩展方法
+2.浅层克隆
+3.深层克隆
+$.extend({  //产生随机数的方法加到工具方法里
+  definedMandom:function(start,final){
+    var len = final-start;
+    return Math.random()*len+start;
+  }
+});  
+调用 $.definedMandom
+$.fn.extend({  //拖拽函数加到实例方法里
+  drag:function(){
+    var disX;
+    var disY;
+    var self = this;
+    $(this).on('mousedown',function(e){
+      disX = e.pageX-$(this).offset().left();
+      disY = e.pageY-$(this).offset().top();
+      $(document).on('mousemove',function(e){  //方块是$(self)  left:当前位置减去相对偏移位置
+        $(self).css({left:e.pageX-disX,top:e.pageY-disY});
+      })
+      $(document).on('mouseup',function(e){
+        $(document).off('mousemove').off('mouseup');
+      })
+    })
+    return this;
+  }
+})
+调用 $(".demo").drag()
 
+var obj1={
+  lastName:"deng",
+  age:6
+}
+var obj2={
+  lastName:"deng",
+  age:50,
+  smoke:true，
+  girlfriend:{
+    name:"xiaowang"
+  }
+}
+$.extend(obj1,obj2);
+obj1 : lastName:"deng",age:50, smoke:true   //没有的增加，有的覆盖
+浅层克隆： 引用值的索引也克隆过来，同一个引用值
 
-
-
+深层克隆：(多了一个参数true)
+$.extend(true,obj1,obj2);
+也是没有的增加，有的覆盖；区别是引用值索引不同（尽管值被克隆过来）
 
 
 
