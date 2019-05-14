@@ -74,5 +74,177 @@ $.ajax({
 })
 
 //回调地狱代码展示
+<style>
+    .tpl{
+        display:none;
+    }
+    .wrapper{
+        overflow: hidden;
+        border: 2px solid black;
+        width:600px;
+        margin:100px auto 0;
+    }
+    .movieSection{
+        float:left;
+        width:100px;
+        height:100px;
+        padding:10px;
+    }
+    .movieSection img{
+        width:100%;
+        height:150px;
+        cursor:pointer;
+    }
+    .movieSection h3{
+        height:30px;
+    }
+</style>
+<body>
+<div class="wrapper">
+    <div class="tpl">
+        <img src="" />
+        <h3 class="movieName"></h3>
+    </div>
+</div>
+</body>
+<script  src="JQuery3.3.1.js"></script>
+<script>
+    $.ajax({
+        url: '',
+        type:'POST',
+        data:{
+            username: 'cst',
+            password: '123456'
+        },
+        success:function (res) {
+            if(res.data.power=='root'){
+                //vip  网络地址发送请求
+                $.ajax({
+                    url:'',
+                    type:'GET',
+                    success:function (res) {
+                        var data = res.data;
+                        var $Wrapper = $('.wrapper');
+                        $.each(data,function (index,ele) {
+                            var $MovieSection = $('.tpl').clone().removeClass('tpl').addClass('movieSection');
+                            $MovieSection.data({id:ele.id}).on('click',function () { //把ID存下来，再绑定事件
+                                $.ajax({
+                                    url:'',
+                                    type:'GET',
+                                    data:{
+                                        movieId:$(this).data('id')   //通过data再把ID获取到
+                                    },
+                                    success:function (res) {  //reduce() 把数组返回成字符串
+                                        var data = res.data;
+                                        var direct = data.direct;
+                                        var gut = data.gut;
+                                        var mainActor = data.mainActor;
+                                        var screenWriter = data.screenWriter;
+                                        var htmlStr = '<div class="mask">\
+                                            <p>导演：'+direct+'</p>\
+                                            <p>剧情：'+gut+'</p>\
+                                            <p>主演：'+mainActor.reduce(function (prev,curv) {
+                                            prev += curv+' ';
+                                            return prev;
+                                        },'')+'</p>\
+                                             <p>编剧：'+screenWriter.reduce(function (prev,curv) {
+                                            prev += curv+' ';
+                                            return prev;
+                                        },'')+'</p>\
+                                            </div>'
+                                            
+                                            //$('body').html(htmlStr);
+                                        $(htmlStr).appendTo('body')
+                                            .css({width:400,position:'absolute',left:$(window).outerWidth/2,bottom:100,marginLeft:-200});
+                                    }
+                                })
+                            }).children()
+                                .eq(0).attr('src',ele.poster)
+                                .next().text(ele.name);
 
+                            $Wrapper.append($MovieSection);   
+                        })
+                    }
+                })
+            }else{
+                //非vip
+            }
+        }
+    })
+</script>
+//设计模式  六大原则
+//单一职责原则   开闭原则
+
+//解决回调地狱  $.Deferred()
+$.ajax() 是有返回值的，它的返回值就是$.Deferred()
+//延迟 (最基本的应用：有状态的回调)
+    //var df = $.Deferred();
+    //   done 成功    fail 失败  progress 正在进行
+    //执行时resolve    reject     notify
+    //做一件异步的事情
+    function createScore(){
+        var df = $.Deferred();
+        setInterval(function () {
+            var score = Math.random()*100;
+            if(score > 60){
+                df.resolve('congratulations');
+            }else if(score < 50){
+                df.reject('get out');
+            }else{
+                df.notify('go on');
+            }
+        },1500);
+        //只返回注册功能 done fail progress
+        return df.promise();  //promise() 返回阉割对象 只能注册，不能自动触发
+    }
+    var df = createScore();
+    //注册成功的回调函数
+    df.done(function (ms) {
+        console.log('oh yeah i do it'+ms);
+    })
+    //注册失败的回调函数
+    df.fail(function (ms) {
+        console.log('sorry i am a loser'+ms);
+    })
+    //注册进行时的回调函数
+    df.progress(function (ms) {
+        console.log('waiting。。'+ms);
+    })
+
+    //then  延迟的核心
+    var df = $.Deferred();
+    df.done(function () {
+        console.log('done1');
+    }).fail(function () {
+        console.log('fail');
+    }).progress(function () {
+        console.log('progress');
+    }).done(function () {
+        console.log('done2');
+    })
+    //then第一个作用   简化注册的写法(三个参数：分别是done fail progress三个函数)
+    df.then(function () {
+        console.log('done');
+    },function () {
+        console.log('fail');
+    },function () {
+        console.log('progress');
+    })
+    //线性的链式调用  .then()执行完后，返回一个新的延迟对象
+    df.then(function (ms) {
+        console.log('on yeah'+ms);
+        return 'ok';
+    },function (ms) {
+        console.log('oh no'+ms);
+        return 'no';
+    },function (ms) {
+        console.log('what'+ms);
+        return 'go on';
+    }).then(function (param) {
+        console.log('泡妞'+param);
+    },function (param) {
+        console.log(param+'脸');
+    },function (param) {
+        console.log(param+'加油');
+    })
 
