@@ -9,13 +9,23 @@ jquery $.ajax
       context:改变函数上下文  改变this指向
       timeout:
       async:true false 是否异步   false(默认有阻塞机制) 
+      datatype:'jsonp'  //跨域
+function deal(res){
+      console.log(res);  //返回的数据
+}      
 $.ajax({
    url:'',
    type:'GET', 传递参数时，通过在URL后面以？形式传递  'POST' 传递参数时，以参数主体传递 
-   async:true,  异步编程 （因为js是单线程编程，所以通过异步来提升执行效率，最后通过回调再返回来）
+   async:true,  异步编程 （因为js是单线程编程，所以通过异步来提升执行效率，最后通过回调再返回来此时这个线程里）
    data:{
       key:value
    },
+   //跨域
+   datatype:'jsonp',
+   data:{
+      wd:'nba',
+      cb:'deal'   //必须是一个全局函数，在全局函数里操作返回的数据
+   }
    success:function(res){
     //console.log(res);
     $.each(res.data,function(index,ele){
@@ -29,7 +39,40 @@ $.ajax({
    complete:function(){
     //给标签添加事件
    },
-   context:$('.wrapper'),   $(this)为wrapper
-   
-   
+   context:$('.wrapper'),   $(this)为wrapper  
 });
+
+异步编程是离不开回调机制的-----回调函数就是异步完成后执行的函数
+//没有参数  顺序执行
+var cb = $.Callbacks();  //创建回调对象
+function a(){
+      console.log('a',x,y);
+}
+function b(){
+      console.log('b',x,y);
+}
+cb.add(a,b);  //把需要执行的回调函数放入
+cb.fire('10','20');  //执行  （一般是有条件时触发）
+//有参数
+var cb = $.Callbacks(‘once’);  //只执行一次
+var cb = $.Callbacks(‘memory’);  //有记忆功能  在fire之后再添加回调函数，也能执行
+var cb = $.Callbacks(‘unique’);  //去重，相同的只执行一次
+var cb = $.Callbacks(‘stopOnFalse’);  //当碰到返回值是false的时候，后面的代码就不执行了
+
+//回调机制很好用 --- js单线程 -》 异步编程优化体验 防止阻塞页面 -》 回调函数
+//比如：运动函数  animate 当你满足某个状态  接下要去做另外一件事
+//$.callback
+$.ajax({
+      url:'',
+      type:'',
+      success:function(res){
+            res=>
+            $.ajax({
+                 success:function(){}   //回调套回调，就会出现回调地狱 
+            })
+      }  //回调机制
+})
+
+//回调地狱代码展示
+
+
