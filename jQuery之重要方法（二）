@@ -1,0 +1,35 @@
+jquery $.ajax
+//参数 obj
+//属性 url  
+      type请求方式 
+      data {}参数 信息
+      success:请求成功后的处理函数
+      error:请求失败后的处理函数
+      complete:请求完成后的处理函数，最后执行
+      context:改变函数上下文  改变this指向
+      timeout:
+      async:true false 是否异步   false(默认有阻塞机制) 
+$.ajax({
+   url:'',
+   type:'GET', 传递参数时，通过在URL后面以？形式传递  'POST' 传递参数时，以参数主体传递 
+   async:true,  异步编程 （因为js是单线程编程，所以通过异步来提升执行效率，最后通过回调再返回来）
+   data:{
+      key:value
+   },
+   success:function(res){
+    //console.log(res);
+    $.each(res.data,function(index,ele){
+      console.log(ele);
+    })
+    //生成标签
+   },
+   error:function(e){
+      console.log(e.status,e.statusText);
+   },
+   complete:function(){
+    //给标签添加事件
+   },
+   context:$('.wrapper'),   $(this)为wrapper
+   
+   
+});
