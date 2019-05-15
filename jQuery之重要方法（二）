@@ -315,3 +315,95 @@ $.ajax() 是有返回值的，它的返回值就是$.Deferred()
         $(htmlStr).appendTo('body')
             .css({width:400,position:'absolute',left:$(window).outerWidth/2,bottom:100,marginLeft:-200});
     })
+    
+    
+   原理
+   myjQuery.js
+    jQuery.myCallbacks = function () {
+        //参数 'once' 'memory'  'once momery'  null
+        var options = arguments[0] || '';  //存储参数
+        var list = [];   //通过add来加入的方法
+        var fireIndex = 0;  //索引  记录当前要执行的函数的索引
+        var fired = false;  //记录是否有被fire过
+        var args = [];   //全局实际参数列表
+        var fire = function() {
+            for (;fireIndex<list.length;fireIndex++){
+                list[fireIndex].apply(window,args);   //把参数传进来
+            }
+            if(options.indexOf('once')!=-1){   //如果有once，只执行一次
+                list = [];
+                fireIndex = 0;
+            }
+        }
+        return {
+            add:function (func) {
+                list.push(func);
+                if(options.indexOf('memory')!=-1 && fired){
+                    fire();   //有memory，且已经执行过一次后，在添加函数之后接着执行
+                }
+                return this;
+            },
+            fire:function () {
+                fireIndex = 0;
+                args = arguments;
+                fired = true;
+                fire();
+            }
+        }
+    }
+    jQuery.myDeferred = function () {
+        //defer的内部其实还是callback
+        //三种有状态的回调
+        //done--resolve    fail--reject   progress--notify
+        var arr = [
+            [
+                jQuery.myCallbacks('once memory'),'done','resolve'
+            ],
+            [
+                jQuery.myCallbacks('once memory'),'fail','reject'
+            ],
+            [
+                jQuery.myCallbacks('memory'),'progress','notify'
+            ]
+        ];
+        var pending = true;
+        var deferred = {};
+        for (var i=0;i<arr.length;i++){
+            //注册
+            //deferred['done'] = function(){}
+            //deferred['fail'] = function(){}
+            //deferred['progress'] = function(){}
+            deferred[arr[i][1]] = (function(index){
+                return function (func) {
+                    arr[index][0].add(func);
+                }
+            })(i);   //通过立即执行函数形成闭包的形式，防止数组越界
+            //触发
+            //deferred['resolve'] = function(){}
+            //deferred['reject'] = function(){}
+            //deferred['notify'] = function(){}
+            deferred[arr[i][2]] = (function(index){
+                return function () {
+                    var args = arguments;
+                    if(pending){
+                        arr[index][0].fire.apply(window,args);
+                        arr[index][2] == 'resolve' || arr[index][2] == 'reject' ? pending = false : '';
+                    }
+
+                }
+            })(i);
+        }
+        return deferred;
+    }
+
+$.when()
+    //参数可以是一个或多个延迟对象
+    //返回值是promise对象
+    //多个ajax统一处理    三个全是done，返回done；有一个是fail，返回fail
+    $.when(createScore1(),createScore2(),createScore3()).then(function () {
+        //done
+    },function () {
+        //fail
+    },function () {
+        //progress  一般不用
+    })
