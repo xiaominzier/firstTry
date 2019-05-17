@@ -52,7 +52,15 @@ $('.wrapper').fullpage({
         <h3>第一屏</h3>
     </div>
     <div class="section">
-        <h3>第二屏</h3>
+        <div class="slide">
+                <h1>2-1</h1>
+            </div>
+            <div class="slide">
+                <h1>2-2</h1>
+            </div>
+            <div class="slide">
+                <h1>2-3</h1>
+            </div>
     </div>
     <div class="section">
         <!--<div class="slideWrapper"> --> <!--绝对定位，参照section，改变left值，宽度为整个slide的宽度和-->
