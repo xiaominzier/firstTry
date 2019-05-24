@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            padding:0;
+            margin:0;
+            list-style: none;
+            text-decoration: none;
+        }
+        body{
+            background-color:#f0f3ef;
+        }
+        .header{
+            width:100%;
+        }
+        .header .ad{
+            width:100%;
+            background-color:#f23d9c;
+            height:80px;
+        }
+        .header .ad .ad-inner{
+            width:1190px;
+            margin:0 auto;
+            height:80px;
+            background:url(https://) no-repeat 50% 0;
+        }
+        .header .shortcut{
+            width:100%;
+            height:30px;
+            font-size:12px;
+            background-color:#e3e4e5;
+            color:#999;
+        }
+        .header .shortcut .w{
+            width:1190px;
+            margin:0 auto;
+            height:30px;
+            line-height:30px;
+        }
+        .position{
+            float:left;
+            margin-left: 200px;
+        }
+        .nav{
+            float:right;
+        }
+        .nav li{
+            float:left;
+            padding:0 7px;
+            position:relative;
+        }
+        .nav .slider{
+            /*display:inline-block;*/
+            float:left;    /*有该属性，默认将span置为inline-block*/
+            width:1px;
+            height:10px;
+            background-color:#ccc;
+            margin:11px 5px 0;
+        }
+        .shortcut a{
+            color:#999;
+        }
+        .dropdown{
+            position:absolute;   /*脱离文档流*/
+            width:280px;
+            background-color:#fff;
+        }
+        .dropdown dl{
+            overflow:hidden;     /*清除浮动带来的影响*/
+            padding:10px 0 10px 15px;
+            border-bottom:1px solid #ccc;
+        }
+        .dropdown dl dd{
+            width:126px;
+            float:left;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="ad">
+        <div class="ad-inner"></div>
+    </div>
+    <div class="shortcut">
+        <div class="w">
+            <div class="position">黑龙江</div>
+            <div class="nav">
+                <ul>
+                    <li>
+                        你好，请登录
+                        <a href="#">免费登录</a>
+                    </li>
+                    <span class="slider"></span>
+                    <li>
+                        <a href="#">我的订单</a>
+                    </li>
+                    <span class="slider"></span>
+                    <li id="myJd">
+                        <!--<a href="#">我的京东</a>
+                        <div class="dropdown">
+                            <dl>
+                                <dd>待处理订单</dd>
+                                <dd>返修改换货</dd>
+                                <dd>降价商品</dd>
+                                <dd>消息</dd>
+                                <dd>我的问答</dd>
+                                <dd>我的关注</dd>
+                            </dl>
+                            <dl>
+                                <dd>我的京豆</dd>
+                                <dd>我的白条</dd>
+                                <dd>我的优惠券</dd>
+                                <dd>我的理财</dd>
+                            </dl>
+                        </div>-->
+                    </li>
+                    <span class="slider"></span>
+                    <li>
+                        <a href="#">京东会员</a>
+                    </li>
+                    <span class="slider"></span>
+                    <li id="procurement">
+                        <a href="#">企业采购</a>
+                    </li>
+                    <span class="slider"></span>
+                    <li id="service">
+                        <a href="#">用户服务</a>
+                    </li>
+                    <span class="slider"></span>
+                    <li id="bar-navs">
+                        <a href="#">网站导航</a>
+                    </li>
+                    <span class="slider"></span>
+                    <li>
+                        手机京东
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="search">
+</div>
+<div class="content"></div>
+</body>
+<script src="JQuery3.3.1.js"></script>
+<script>
+    (function () {
+        //创建构造函数，每一次都new一个新的对象
+        function Dropdown(options){
+            //把属性保存在对象上
+            this.father = options.father;
+            this.href = options.href;
+            this.width = options.width;
+            this.title = options.title;
+            this.menuList = options.menuList;
+            this.createDom();
+            this.initStyle();
+        }
+        //创建下拉列表元素
+        Dropdown.prototype.createDom = function(){
+            var dropdownDiv = $('<div class="my-dropdown"></div>');
+            this.menuList.forEach(function (item,index) {
+                var oDl = $('<dl></dl>');
+                if(item.title){
+                    oDl.append($('<dt>'+item.title+'</dt>'));
+                }
+                var items = item.items;
+                items.forEach(function (data) {
+                    oDl.append($('<dd><a href="'+data.href+'">'+data.name+'</a></dd>'));
+                })
+                dropdownDiv.append(oDl);
+            })
+            $(this.wrap).append($('<a href="'+ this.href +'">'+this.title+'</a>')).append(dropdownDiv);
+        }
+        Dropdown.prototype.initStyle = function(){
+            $('.my-dropdown',this.father).css({
+                position:'absolute',   /*脱离文档流*/
+                width:this.width*2+28,
+                backgroundColor:'#fff'
+            });
+            $('.my-dropdown dl',this.father).css({
+                overflow:'hidden',
+                padding:'10px 0 10px 15px',
+                borderBottom:'1px solid #ccc',
+            });
+            $('.my-dropdown dl dt',this.father).css({
+                fontWeight:'bold',
+                color:'#666'
+            });
+            $('.my-dropdown dl dd',this.father).css({
+                width:this.width,
+                float:'left',
+                whiteSpace:'nowrap'
+            });
+        }
+        $.fn.extend({
+            addDropdown:function (options) {
+                options.father = this;   //保存调用对象
+                new Dropdown(options);
+            }
+        })
+    })()
+</script>
+<script>
+    $('#myJd').addDropdown({
+        href:'#',
+        title:"我的京东",
+        width:126,
+        menuList:[
+            {
+                title:'',
+                items:[
+                    {
+                        href:'#',
+                        name:'待处理订单',
+                    },
+                    {
+                        href:'#',
+                        name:'返修改换货',
+                    },
+                    {
+                        href:'#',
+                        name:'降价商品',
+                    },
+                    {
+                        href:'#',
+                        name:'消息',
+                    },
+                    {
+                        href:'#',
+                        name:'我的问答',
+                    },
+                    {
+                        href:'#',
+                        name:'我的关注',
+                    },
+                ]
+            },{
+                title:'',
+                items:[
+                    {
+                        href:'#',
+                        name:'我的京豆',
+                    },
+                    {
+                        href:'#',
+                        name:'我的白条',
+                    },
+                    {
+                        href:'#',
+                        name:'我的优惠券',
+                    },
+                    {
+                        href:'#',
+                        name:'我的理财',
+                    },
+                ]
+            }
+        ]
+    })
+</script>
+</html>
