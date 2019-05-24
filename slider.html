@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    .demo{
+        width:500px;
+        height:300px;
+        border:1px solid #000;
+        margin:50px auto;
+    }
+    .box{
+        width:500px;
+        height:300px;
+        border:1px solid #000;
+        margin:50px auto;
+    }
+</style>
+<body>
+<div class="demo"></div>
+<div class="box"></div>
+<script src="JQuery3.3.1.js"></script>
+<script src="index.js">
+    (function () {
+        //创建轮播图对象
+        function slider(options){  //构造函数
+            this.wrap = options.wrap;
+            this.imgList = options.imgList;
+            this.imgNum = this.imgList.length;
+            this.width = options.width || $(this.wrap).width();
+            this.height = options.height || $(this.wrap).height();
+            this.animateType = options.animateType || 'animate';
+            this.isAuto = options.isAuto;
+            this.direction = options.direction || 'right';
+            this.nowIndex = 0;
+            this.flag = false;
+
+            //创建轮播如结构
+            this.createDom();
+            this.initStyle();
+            this.bindEvent();
+            if(this.isAuto){
+                this.autoMove();
+            }
+        }
+        //创建轮播图dom结构
+        slider.prototype.createDom = function(){   //将方法构建在slider的原型链上
+            var oUl = $('<ul class="slider"></ul>');
+            var oSpot = $('<div class="spot"></div>');
+            this.imgList.forEach(function (item,index) {
+                var oLi = $('<li><a href="#"><img src="'+ item +'"></img></a></li>');
+                var oSpan = $('<span></span>');
+                oLi.appendTo(oUl);
+                oSpan.appendTo(oSpot);
+            });
+            if(this.animateType == 'animate'){
+                $('<li><a href="#"><img src="'+ this.imgList[0] +'"></img></a></li>').appendTo(oUl);
+            }
+            var leftBtn = $('<div class="left-btn">&lt;</div>');
+            var rightBtn = $('<div class="right-btn">&gt;</div>');
+            this.wrap.append(oUl).append(leftBtn).append(rightBtn).append(oSpot);
+        }
+        //初始化轮播图样式
+        slider.prototype.initStyle = function(){
+            $('*',this.wrap).css({    //传两个参数，第二个参数表示作用域。防止有多个元素要调用时，出现冲突
+                listStyle:'none',
+                margin:0,
+                padding:0
+            });
+            $(this.wrap).css({
+                overflow:'hidden',
+                position:'relative'
+            });
+            $('.slider',this.wrap).css({
+                width: this.animateType == 'animate' ? this.width * (this.imgNum+1) : this.width,
+                height:this.height,
+                position:'absolute'
+            });
+            if(this.animateType=='animate'){
+                $('.slider>li',this.wrap).css({
+                    width:this.width,
+                    height:this.height,
+                    float:'left'
+                });
+            }else if(this.animateType=='fade'){
+                $('.slider>li',this.wrap).css({
+                    width:this.width,
+                    height:this.height,
+                    position:'absolute',
+                    left:0,
+                    top:0,
+                    display:'none'
+                }).eq(this.nowIndex).css({
+                    display:'block'
+                });
+            }
+            $('.slider>li a,.slider>li a img',this.wrap).css({
+                display:'inline-block',
+                width:this.width,
+                height:this.height
+            });
+            $('.left-btn,.right-btn',this.wrap).css({
+                width:50,
+                height:30,
+                backgroundColor:'rgba(0,0,0,0.5)',
+                color:'#fff',
+                position:'absolute',
+                top:'50%',
+                marginTop:-15,
+                textAlign:'center',
+                cursor:'pointer',
+                lineHeight:'30px'
+            });
+            $('.right-btn',this.wrap).css({
+                right:0
+            });
+            $('.spot',this.wrap).css({
+                position:'absolute',
+                bottom:0,
+                left:'50%',
+                marginLeft:-16*this.imgNum/2
+            });
+            $('.spot>span',this.wrap).css({
+                display:'inline-block',
+                width:10,
+                height:10,
+                margin:3,
+                borderRadius:'50%',
+                backgroundColor:'#fff',
+                cursor:'pointer'
+            }).eq(this.nowIndex).css({
+                backgroundColor:'red'
+            });
+        }
+        //绑定轮播图内的事件
+        slider.prototype.bindEvent = function(){
+            var self = this;
+            $('.left-btn',self.wrap).click(function () {
+                self.move('prev');
+                // if(self.flag){
+                //     return false;
+                // }
+                // self.flag = true;
+                // if(self.nowIndex == 0){
+                //     self.nowIndex = self.imgNum;
+                // }else{
+                //     self.nowIndex--;
+                // }
+                // if(self.animateType =='animate'){
+                //     if(self.nowIndex == 0){
+                //         $('.slider').css({    //如果是第一张，直接先跳到最后一张
+                //             left:-self.imgNum*self.width
+                //         });
+                //         self.nowIndex = self.imgNum - 1;   //改变索引值
+                //     }else{
+                //         self.nowIndex --;
+                //     }
+                //     $('.slider').animate({
+                //         left:-self.nowIndex*self.width
+                //     },function () {
+                //         self.flag = false;
+                //     })
+                // }else if(self.animateType=='fade'){
+                //     if(self.nowIndex == 0){
+                //         self.nowIndex = self.imgNum - 1;
+                //     }else{
+                //         self.nowIndex --;
+                //     }
+                //     $('.slider li').fadeOut().eq(self.nowIndex).fadeIn();   //其余的消失，当前的出现
+                // }
+            });
+            $('.right-btn',self.wrap).click(function (){
+                self.move('next');
+            });
+            $('.spot span',self.wrap).click(function () {
+                console.log($(this).index());   //获取到当前小圆点的索引值
+                self.move($(this).index());
+            });
+            $(this.wrap).mouseenter(function () {
+                clearInterval(self.timer);
+            }).mouseleave(function () {
+                if(self.isAuto){
+                    self.autoMove();
+                }
+            })
+        }
+        slider.prototype.move = function(dir){
+            var self = this;
+            if(self.flag){
+                return false;
+            }
+            self.flag = true;
+            switch (dir){
+                case 'prev':
+                    if(self.animateType=='animate'){
+                        if(self.nowIndex == 0){
+                            $('.slider',self.wrap).css({    //如果是第一张，直接先跳到最后一张
+                                left:-self.imgNum*self.width
+                            });
+                            self.nowIndex = self.imgNum - 1;   //改变索引值
+                        }else{
+                            self.nowIndex --;
+                        }
+                    }else if(self.animateType=='fade'){
+                        if(self.nowIndex == 0){
+                            self.nowIndex = self.imgNum - 1;   //改变索引值
+                        }else{
+                            self.nowIndex --;
+                        }
+                    }
+                    break;
+                case 'next':
+                    if(self.animateType=='animate'&& self.nowIndex == self.imgNum){  //动画需要放置5张图片
+                        $('.slider',self.wrap).css({    //如果是最后一张，直接先跳到第一张
+                            left:0
+                        });
+                        self.nowIndex = 1;   //改变索引值
+                    }else if(self.animateType=='fade'&& self.nowIndex == self.imgNum-1){   //渐入渐出只需要放置4张图片
+                        self.nowIndex = 0;
+                    }else{
+                        self.nowIndex ++;
+                    }
+                    break;
+                default:
+                    this.nowIndex = dir;
+                    break;
+            }
+            if(this.animateType=='animate'){
+                $('.slider',self.wrap).animate({
+                    left:-self.nowIndex*self.width,
+                },function (){
+                    self.flag = false;
+                });
+            }else if(this.animateType=="fade"){
+                $('.slider li',self.wrap).fadeOut().eq(self.nowIndex).fadeIn(function () {
+                    self.flag = false;
+                });
+            }
+            $('.spot>span',self.wrap).css({   //改变小圆点的样式
+                backgroundColor:'white'
+            }).eq(self.nowIndex % this.imgNum).css({
+                backgroundColor:'red'
+            })
+        }
+
+        slider.prototype.autoMove = function(){
+            var self = this;
+            this.timer = setInterval(function () {  //把定时器timer放置在图片上
+                if(self.direction=='left'){
+                    $('.left-btn',self.wrap).trigger('click');
+                }else{
+                    $('.right-btn',self.wrap).trigger('click');
+                }
+            },3000)
+        }
+        //prototype
+        $.fn.extend({
+            slider:function (options) {  //options形参
+                //保存插入轮播图的位置
+                options.wrap = this;
+                //构建轮播图对象
+                new slider(options);
+            }
+        })
+    })()
+</script>
+<script>
+    //创建轮播图
+    $('.demo').slider({
+        imgList:['image/pic1.png','image/pic2.png','image/pic3.png','image/pic4.png'],
+        width:500,
+        height:300,
+        animateType:'animate',
+        isAuto:true,
+        direction:'right'
+    });
+     $('.box').slider({
+         imgList:['image/pic1.png','image/pic2.png','image/pic3.png','image/pic4.png'],
+         width:500,
+         height:300,
+         animateType:'fade',
+         isAuto:true,
+         direction:'right'
+     });
+</script>
+</body>
+</html>
