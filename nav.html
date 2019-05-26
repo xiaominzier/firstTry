@@ -157,8 +157,11 @@
             this.width = options.width;
             this.title = options.title;
             this.menuList = options.menuList;
+            this.position = options.position || 'left';
+            this.direction = options.direction || 'y';
             this.createDom();
             this.initStyle();
+            this.bindEvent();
         }
         //创建下拉列表元素
         Dropdown.prototype.createDom = function(){
@@ -177,16 +180,44 @@
             $(this.wrap).append($('<a href="'+ this.href +'">'+this.title+'</a>')).append(dropdownDiv);
         }
         Dropdown.prototype.initStyle = function(){
-            $('.my-dropdown',this.father).css({
-                position:'absolute',   /*脱离文档流*/
-                width:this.width*2+28,
-                backgroundColor:'#fff'
-            });
-            $('.my-dropdown dl',this.father).css({
-                overflow:'hidden',
-                padding:'10px 0 10px 15px',
-                borderBottom:'1px solid #ccc',
-            });
+            var width = this.width*2+28;
+            if(this.direction=='x'){    //横向排列样式
+                $('.my-dropdown',this.father).css({
+                    position:'absolute',   /*脱离文档流*/
+                    width:1184,
+                    backgroundColor:'#fff',
+                    left:this.position == 'left' ? 0 : 'auto',
+                    right:-84,
+                    padding:'15px 0',
+                    border:'1px solid #eee',
+                    display:'none'
+                });
+                var self = this;
+                $('.my-dropdown dl',this.father).each(function (i) {
+                    $(self).css({
+                        width:self.menuList[i].width,
+                        float:'left',
+                        borderRight:'1px solid #eee',
+                        margin:10
+                    }).find('dd').css({
+                        width:self.menuList[i].itemWidth
+                    })
+                })
+            }else{   //正常纵向排列样式
+                $('.my-dropdown',this.father).css({
+                    position:'absolute',   /*脱离文档流*/
+                    width:this.width*2+28,
+                    backgroundColor:'#fff',
+                    left:this.position == 'left' ? 0 : 'auto',
+                    right:this.position == 'right' ? 0 : 'auto',
+                    display:'none'
+                });
+                $('.my-dropdown dl',this.father).css({
+                    overflow:'hidden',
+                    padding:'10px 0 10px 15px',
+                    borderBottom:'1px solid #ccc',
+                });
+            }
             $('.my-dropdown dl dt',this.father).css({
                 fontWeight:'bold',
                 color:'#666'
@@ -196,6 +227,17 @@
                 float:'left',
                 whiteSpace:'nowrap'
             });
+        }
+        Dropdown.prototype.bindEvent = function(){
+            var self = this;
+            $(this.father).hover(function () {  //给父级添加hover事件，防止鼠标移到下拉框时没了
+                $(this).css('background-color','#fff');
+                $('.my-dropdown',self.father),show();
+            },function () {
+                $(this).css('background-color','transparent');
+                $('.my-dropdown',self.father),hide();
+            })
+
         }
         $.fn.extend({
             addDropdown:function (options) {
